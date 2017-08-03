@@ -83,7 +83,10 @@ def control_buy_orders(orderInventory):
 
 def get_last_order_value(market):
     lastOrder = api.getorderhistory(market, 0)
-    return lastOrder[0]['PricePerUnit']
+    if lastOrder:
+        return lastOrder[0]['PricePerUnit']
+    else:
+        return get_initial_market_value(market)
 
 def calculate_sell_order_value(orderHistory, sellValuePercent):
     newSellValue = round((orderHistory * (sellValuePercent * .01)) + orderHistory, 8)
@@ -103,15 +106,17 @@ def calculate_buy_order_volume(orderVolume, buyVolumePercent):
 
 def check_for_recent_transaction(market, orderInventory):
     lastOrder = api.getorderhistory(market, 0)
-    lastOrder = lastOrder[0]['Closed']
-    orderTime = re.sub('T', ' ', lastOrder)
-    orderTime = datetime.datetime.strptime(orderTime,  "%Y-%m-%d %H:%M:%S.%f")
-    currentTime = datetime.datetime.utcnow()
-    difference = currentTime - orderTime
+    if lastOrder:
+        lastOrder = lastOrder[0]['Closed']
+        orderTime = re.sub('T', ' ', lastOrder)
+        orderTime = datetime.datetime.strptime(orderTime,  "%Y-%m-%d %H:%M:%S.%f").replace(microsecond=0)
+        print orderTime
+        currentTime = datetime.datetime.utcnow()
+        difference = currentTime - orderTime
 
-    if difference.total_seconds() < checkInterval:
-        reset_orders(orderInventory)
-        time.sleep(2)
+        if difference.total_seconds() < checkInterval:
+            reset_orders(orderInventory)
+            time.sleep(2)
 
 def reset_orders(orderInventory):
     for order in orderInventory:
