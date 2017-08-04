@@ -77,7 +77,7 @@ def control_buy_orders(orderInventory):
     if (orders == 1):
         return 1
     elif (orders > 1):
-        kill_buy_orders(orderInventory, orders)
+        kill_buy_order(orderInventory, orders)
     else:
         return 0
 
