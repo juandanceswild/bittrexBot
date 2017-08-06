@@ -1,9 +1,7 @@
 #!/usr/bin/env python
-__author__ = 'zaphodbeeblebrox'
+__author__ = 'chase.ufkes'
 
 # TODO
-# add an initial market check
-# figure out how the hell Wilde's assessing volume
 # note the code
 # make it more readable
 
@@ -12,6 +10,7 @@ import datetime
 import re
 import json
 from modules import bittrex
+from modules import orderUtil
 
 with open("config/botConfig.json", "r") as fin:
     config = json.load(fin)
@@ -36,10 +35,7 @@ def get_orders(market):
     return orderInventory
 
 def get_number_of_sell_orders(orderInventory):
-    orderCount = 0
-    for order in orderInventory:
-        if (order['OrderType'] == 'LIMIT_SELL'):
-            orderCount = orderCount + 1
+    orderCount = orderUtil.sellNumber(orderInventory)
     return orderCount
 
 def kill_sell_order(orderInventory, orders):
@@ -59,10 +55,7 @@ def control_sell_orders(orderInventory):
         return 0
 
 def get_number_of_buy_orders(orderInventory):
-    orderCount = 0
-    for order in orderInventory:
-        if (order['OrderType'] == 'LIMIT_BUY'):
-            orderCount = orderCount + 1
+    orderCount = orderUtil.buyNumber(orderInventory)
     return orderCount
 
 def kill_buy_order(orderInventory, orders):
@@ -87,22 +80,6 @@ def get_last_order_value(market):
         return lastOrder[0]['PricePerUnit']
     else:
         return get_initial_market_value(market)
-
-def calculate_sell_order_value(orderHistory, sellValuePercent):
-    newSellValue = round((orderHistory * (sellValuePercent * .01)) + orderHistory, 8)
-    return newSellValue
-
-def calculate_sell_order_volume(orderVolume, sellVolumePercent):
-    newSellVolume = round(orderVolume * (sellVolumePercent * .01), 8)
-    return newSellVolume
-
-def calculate_buy_order_value(orderValueHistory, buyValuePercent):
-    newBuyValue = round(orderValueHistory - (orderValueHistory * (buyValuePercent * .01)), 8)
-    return newBuyValue
-
-def calculate_buy_order_volume(orderVolume, buyVolumePercent):
-    newBuyVolume = round((orderVolume * (buyVolumePercent * .01)), 8)
-    return newBuyVolume
 
 def check_for_recent_transaction(market, orderInventory):
     lastOrder = api.getorderhistory(market, 0)
@@ -129,14 +106,14 @@ def get_initial_market_value(market):
     return currentValue
 
 def set_initial_buy(currentValue, buyVolumePercent, orderVolume, market, buyValuePercent):
-    newBuyValue = round(currentValue - (currentValue * (buyValuePercent * .01)), 8)
-    newBuyVolume = round((orderVolume * (buyVolumePercent * .01)), 8)
+    newBuyValue = orderUtil.defBuyValue(orderValueHistory, buyValuePercent)
+    newBuyVolume = orderUtil.defBuyVolume(orderVolume, buyVolumePercent)
     result = api.buylimit(market, newBuyVolume, newBuyValue)
     print result
 
 def set_initial_sell(currentValue, sellVolumePercent, orderVolume, market, sellValuePercent):
-    newSellValue = round((currentValue * (sellValuePercent * .01)) + currentValue, 8)
-    newSellVolume = round(orderVolume * (sellVolumePercent * .01), 8)
+    newSellValue = orderUtil.defSellValue(orderHistory, sellValuePercent)
+    newSellVolume = orderUtil.defSellVolume(orderVolume, sellVolumePercent)
     result = api.selllimit(market, newSellVolume, newSellValue)
     print result
 
@@ -159,8 +136,8 @@ while True:
     orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
 
     if (sellControl == 0):
-        newSellValue = calculate_sell_order_value(orderValueHistory, sellValuePercent)
-        newSellVolume = calculate_sell_order_volume(orderVolume, sellVolumePercent)
+        newSellValue = orderUtil.defSellValue(orderHistory, sellValuePercent)
+        newSellVolume = orderUtil.defSellVolume(orderVolume, sellVolumePercent)
         print "Currency: " + currency
         print "Sell Value: " + str(newSellValue)
         print "Sell volume: " + str(newSellVolume)
@@ -168,8 +145,8 @@ while True:
         print result
 
     if (buyControl == 0):
-        newBuyValue = calculate_buy_order_value(orderValueHistory, buyValuePercent)
-        newBuyVolume = calculate_buy_order_volume(orderVolume, buyVolumePercent)
+        newBuyValue = orderUtil.defBuyValue(orderValueHistory, buyValuePercent)
+        newBuyVolume = orderUtil.defBuyVolume(orderVolume, buyVolumePercent)
         print "Currency: " + currency
         print "Buy Value: " + str(newBuyValue)
         print "Buy Volume: " + str(newBuyVolume)
