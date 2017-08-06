@@ -2,8 +2,6 @@
 __author__ = 'chase.ufkes'
 
 import time
-import datetime
-import re
 import json
 from modules import bittrex
 from modules import orderUtil
@@ -27,14 +25,6 @@ checkInterval = config['checkInterval']
 api = bittrex.bittrex(apiKey, apiSecret)
 market = '{0}-{1}'.format(trade, currency)
 
-def get_orders(market):
-    orderInventory = api.getopenorders(market)
-    return orderInventory
-
-def get_number_of_sell_orders(orderInventory):
-    orderCount = sellUtil.sellNumber(orderInventory)
-    return orderCount
-
 def kill_sell_order(orderInventory, orders):
     sellUtil.cancelOrder(orderInventory, orders, apiKey, apiSecret)
 
@@ -47,10 +37,6 @@ def control_sell_orders(orderInventory):
     else:
         return 0
 
-def get_number_of_buy_orders(orderInventory):
-    orderCount = buyUtil.buyNumber(orderInventory)
-    return orderCount
-
 def kill_buy_order(orderInventory, orders):
     ordersToKill = orders - 1
     for buyOrder in orderInventory:
@@ -59,32 +45,13 @@ def kill_buy_order(orderInventory, orders):
             ordersToKill = ordersToKill - 1
 
 def control_buy_orders(orderInventory):
-    orders = get_number_of_buy_orders(orderInventory)
+    orders = buyUtil.buyNumber(orderInventory)
     if (orders == 1):
         return 1
     elif (orders > 1):
         kill_buy_order(orderInventory, orders)
     else:
         return 0
-
-def check_for_recent_transaction(market, orderInventory):
-    lastOrder = api.getorderhistory(market, 0)
-    if lastOrder:
-        lastOrder = lastOrder[0]['Closed']
-        orderTime = re.sub('T', ' ', lastOrder)
-        orderTime = datetime.datetime.strptime(orderTime,  "%Y-%m-%d %H:%M:%S.%f").replace(microsecond=0)
-        print orderTime
-        currentTime = datetime.datetime.utcnow()
-        difference = currentTime - orderTime
-
-        if difference.total_seconds() < checkInterval:
-            reset_orders(orderInventory)
-            time.sleep(2)
-
-def reset_orders(orderInventory):
-    for order in orderInventory:
-        print "Removing order: " + order['OrderUuid']
-        api.cancel(order['OrderUuid'])
 
 def set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, orderValueHistory):
     newBuyValue = buyUtil.defBuyValue(orderValueHistory, buyValuePercent)
@@ -101,17 +68,17 @@ def set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, o
 
 #setting buy / sells during startup to avoid crap selling
 currentValue = orderUtil.lastOrderValue(market, apiKey, apiSecret)
-orderInventory = get_orders(market) #prepare to reset orders
-reset_orders(orderInventory)
-time.sleep(2)
+orderInventory = orderUtil.orders(market, apiKey, apiSecret) #prepare to reset orders
+orderUtil.resetOrders(orderInventory, apiKey, apiSecret)
 orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
 orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
 set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, orderValueHistory)
 set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, orderValueHistory)
 time.sleep(2)
+
 while True:
-    orderInventory = get_orders(market)
-    check_for_recent_transaction(market, orderInventory)
+    orderInventory = orderUtil.orders(market, apiKey, apiSecret)
+    orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
     sellControl = control_sell_orders(orderInventory)
     buyControl = control_buy_orders(orderInventory)
     orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
