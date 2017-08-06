@@ -5,6 +5,7 @@ import bittrex
 import datetime
 import re
 
+# retrieve the value of the last order
 def lastOrderValue(market, apiKey, apiSecret):
     api = bittrex.bittrex(apiKey, apiSecret)
     lastOrder = api.getorderhistory(market, 0)
@@ -15,6 +16,8 @@ def lastOrderValue(market, apiKey, apiSecret):
         currentValue = currentValue[0]['Last']
         return currentValue
 
+# checks for a closed transaction within the checkInterval limit,
+# if a transaction has occured within the check, remove orders for the token
 def recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval):
     api = bittrex.bittrex(apiKey, apiSecret)
     lastOrder = api.getorderhistory(market, 0)
@@ -25,16 +28,16 @@ def recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval):
         print orderTime
         currentTime = datetime.datetime.utcnow()
         difference = currentTime - orderTime
-        print difference
-        print checkInterval
         if difference.total_seconds() < checkInterval:
             resetOrders(orderInventory, apiKey, apiSecret)
 
+# retrieve a list of all open orders
 def orders(market, apiKey, apiSecret):
     api = bittrex.bittrex(apiKey, apiSecret)
     orderInventory = api.getopenorders(market)
     return orderInventory
 
+# resets open orders for the token
 def resetOrders(orderInventory, apiKey, apiSecret):
     api = bittrex.bittrex(apiKey, apiSecret)
     for order in orderInventory:

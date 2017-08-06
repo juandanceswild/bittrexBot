@@ -17,3 +17,11 @@ def defBuyValue(orderHistory, buyValuePercent):
 def defBuyVolume(orderVolume, buyVolumePercent):
     newBuyVolume = round((orderVolume * (buyVolumePercent * .01)), 8)
     return newBuyVolume
+
+def cancelOrder(orderInventory, orders, apiKey, apiSecret):
+    api = bittrex.bittrex(apiKey, apiSecret)
+    ordersToKill = orders - 1
+    for buyOrder in orderInventory:
+        while (ordersToKill >  0):
+            api.cancel(buyOrder['OrderUuid'])
+            ordersToKill = ordersToKill - 1

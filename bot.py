@@ -25,31 +25,21 @@ checkInterval = config['checkInterval']
 api = bittrex.bittrex(apiKey, apiSecret)
 market = '{0}-{1}'.format(trade, currency)
 
-def kill_sell_order(orderInventory, orders):
-    sellUtil.cancelOrder(orderInventory, orders, apiKey, apiSecret)
-
 def control_sell_orders(orderInventory):
     orders = sellUtil.sellNumber(orderInventory)
     if (orders == 1):
         return 1
     elif (orders > 1):
-        (orderInventory, orders)
+        sellUtil.cancelOrder(orderInventory, orders, apiKey, apiSecret)
     else:
         return 0
-
-def kill_buy_order(orderInventory, orders):
-    ordersToKill = orders - 1
-    for buyOrder in orderInventory:
-        while (ordersToKill >  0):
-            api.cancel(buyOrder['OrderUuid'])
-            ordersToKill = ordersToKill - 1
 
 def control_buy_orders(orderInventory):
     orders = buyUtil.buyNumber(orderInventory)
     if (orders == 1):
         return 1
     elif (orders > 1):
-        kill_buy_order(orderInventory, orders)
+        buyUtil.cancelOrder(orderInventory, orders, apiKey, apiSecret)
     else:
         return 0
 
