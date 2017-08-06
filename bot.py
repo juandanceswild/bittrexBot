@@ -7,6 +7,7 @@ import re
 import json
 from modules import bittrex
 from modules import orderUtil
+from modules import buyUtil
 from modules import sellUtil
 
 with open("config/botConfig.json", "r") as fin:
@@ -47,7 +48,7 @@ def control_sell_orders(orderInventory):
         return 0
 
 def get_number_of_buy_orders(orderInventory):
-    orderCount = orderUtil.buyNumber(orderInventory)
+    orderCount = buyUtil.buyNumber(orderInventory)
     return orderCount
 
 def kill_buy_order(orderInventory, orders):
@@ -86,8 +87,8 @@ def reset_orders(orderInventory):
         api.cancel(order['OrderUuid'])
 
 def set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, orderValueHistory):
-    newBuyValue = orderUtil.defBuyValue(orderValueHistory, buyValuePercent)
-    newBuyVolume = orderUtil.defBuyVolume(orderVolume, buyVolumePercent)
+    newBuyValue = buyUtil.defBuyValue(orderValueHistory, buyValuePercent)
+    newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
     result = api.buylimit(market, newBuyVolume, newBuyValue)
     print result
 
@@ -117,8 +118,8 @@ while True:
     orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
 
     if (sellControl == 0):
-        newSellValue = orderUtil.defSellValue(orderHistory, sellValuePercent)
-        newSellVolume = orderUtil.defSellVolume(orderVolume, sellVolumePercent)
+        newSellValue = sellUtil.defSellValue(orderValueHistory, sellValuePercent)
+        newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
         print "Currency: " + currency
         print "Sell Value: " + str(newSellValue)
         print "Sell volume: " + str(newSellVolume)
@@ -126,8 +127,8 @@ while True:
         print result
 
     if (buyControl == 0):
-        newBuyValue = orderUtil.defBuyValue(orderValueHistory, buyValuePercent)
-        newBuyVolume = orderUtil.defBuyVolume(orderVolume, buyVolumePercent)
+        newBuyValue = buyUtil.defBuyValue(orderValueHistory, buyValuePercent)
+        newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
         print "Currency: " + currency
         print "Buy Value: " + str(newBuyValue)
         print "Buy Volume: " + str(newBuyVolume)
