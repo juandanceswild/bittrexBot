@@ -52,3 +52,6 @@ docker run -d --name <name> -v /path/to/config/file:/opt/bittrexBot/config jufke
 ## Donations
 
 If this bot helped you out and you want to show your appreciation, feel free to donate some btc to '1D3adR2c3M4Ne9YmmNxKrfcG3SPebcZWJd'
+
+## License
+Code released under the [MIT License](https://github.com/jufkes/bittrexBot/master/LICENSE).
