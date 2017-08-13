@@ -1,5 +1,7 @@
 __author__ = 'chase.ufkes'
 
+import bittrex
+
 # get the number of current buy orders
 def buyNumber(orderInventory):
     orderCount = 0

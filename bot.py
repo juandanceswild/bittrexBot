@@ -43,32 +43,32 @@ def control_buy_orders(orderInventory):
     else:
         return 0
 
-def set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, orderValueHistory):
-    newBuyValue = buyUtil.defBuyValue(orderValueHistory, buyValuePercent)
+def set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, currentValue):
+    newBuyValue = buyUtil.defBuyValue(currentValue, buyValuePercent)
     newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
     result = api.buylimit(market, newBuyVolume, newBuyValue)
     print result
 
-def set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, orderValueHistory):
-    newSellValue = sellUtil.defSellValue(orderValueHistory, sellValuePercent)
+def set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue):
+    newSellValue = sellUtil.defSellValue(currentValue, sellValuePercent)
     newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
     result = api.selllimit(market, newSellVolume, newSellValue)
     print result
 
 
 #setting buy / sells during startup to avoid crap selling
-currentValue = orderUtil.lastOrderValue(market, apiKey, apiSecret)
+currentValue = orderUtil.initialMarketValue(market, apiKey, apiSecret)
 orderInventory = orderUtil.orders(market, apiKey, apiSecret) #prepare to reset orders
 orderUtil.resetOrders(orderInventory, apiKey, apiSecret)
-orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
 orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
-set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, orderValueHistory)
-set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, orderValueHistory)
+set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, currentValue)
+set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue)
 time.sleep(2)
 
 while True:
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
     orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
+    orderInventory = orderUtil.orders(market, apiKey, apiSecret)
     sellControl = control_sell_orders(orderInventory)
     buyControl = control_buy_orders(orderInventory)
     orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)

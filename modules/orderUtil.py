@@ -44,3 +44,9 @@ def resetOrders(orderInventory, apiKey, apiSecret):
         print "Removing order: " + order['OrderUuid']
         api.cancel(order['OrderUuid'])
         time.sleep(2)
+
+def initialMarketValue(market, apiKey, apiSecret):
+    api = bittrex.bittrex(apiKey, apiSecret)
+    currentValue = api.getmarketsummary(market)
+    currentValue = currentValue[0]['Last']
+    return currentValue
