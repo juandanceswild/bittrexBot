@@ -22,6 +22,12 @@ sellVolumePercent = config['sellVolumePercent']
 extCoinBalance = config['extCoinBalance']
 checkInterval = config['checkInterval']
 
+
+if (config['sellValuePercent' and config['sellVolumePercent']]:
+    blockSell = 'false'
+else:
+    blockSell = 'true'
+
 api = bittrex.bittrex(apiKey, apiSecret)
 market = '{0}-{1}'.format(trade, currency)
 
@@ -62,26 +68,30 @@ orderInventory = orderUtil.orders(market, apiKey, apiSecret) #prepare to reset o
 orderUtil.resetOrders(orderInventory, apiKey, apiSecret)
 orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
 set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, currentValue)
-set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue)
+if blockSell = 'false':
+    set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue)
 time.sleep(2)
 
 while True:
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
     orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
-    sellControl = control_sell_orders(orderInventory)
+    if blockSell = 'false':
+        sellControl = control_sell_orders(orderInventory)
+        if (sellControl == 0):
+            newSellValue = sellUtil.defSellValue(orderValueHistory, sellValuePercent)
+            newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
+            print "Currency: " + currency
+            print "Sell Value: " + str(newSellValue)
+            print "Sell volume: " + str(newSellVolume)
+            result = api.selllimit(market, newSellVolume, newSellValue)
+            print result
+            
     buyControl = control_buy_orders(orderInventory)
     orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
     orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
 
-    if (sellControl == 0):
-        newSellValue = sellUtil.defSellValue(orderValueHistory, sellValuePercent)
-        newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
-        print "Currency: " + currency
-        print "Sell Value: " + str(newSellValue)
-        print "Sell volume: " + str(newSellVolume)
-        result = api.selllimit(market, newSellVolume, newSellValue)
-        print result
+
 
     if (buyControl == 0):
         newBuyValue = buyUtil.defBuyValue(orderValueHistory, buyValuePercent)
