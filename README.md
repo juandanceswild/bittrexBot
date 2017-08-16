@@ -1,7 +1,7 @@
 Questions feel free to ask
 
 # bittrexBot
-This is an experimental bot for trading against the bittrex exchange
+This is an experimental bot for swing trading against the bittrex exchange. Set an upper and lower percentage that will place buy / sell orders. When an order triggers, the bracket will shift basing off the last order.
 
 # DISCLAIMER
 
@@ -22,7 +22,12 @@ This is an experimental bot for trading against the bittrex exchange
 * extCoinBalance - off exchange token count
 * checkInterval - how often the bot will check for orders
 
-The percentage values are actual percentages...not decimals. So if you want to trade 3.25% you would input 3.25 in that value. I would also not recommend going below 20 seconds for the checkInterval. Otherwise, it's possible to induce a race condition with bittrex.
+*Specal Options*
+
+* Leaving sell value and / or percent out of the config will disable placement of sell orders. Buys will still place and when they trigger, the bracket will still shift.
+* Leaving buy value and / or percent out of the config will disable placement of buy orders. Sells will still place and when they trigger, the bracket will still shift.
+
+The percentage values are actual percentages...not decimals. So if you want to trade 3.25% you would input 3.25 in that value. I would also not recommend going below 10 seconds for the checkInterval. Otherwise, it's possible to induce a race condition with bittrex.
 
 #### Example file 
 
