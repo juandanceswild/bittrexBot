@@ -56,6 +56,7 @@ docker run -d --name <name> -v /path/to/directory_containing_config_file:/opt/bi
 
 Example:
 docker run -d --name waves -v /opt/botdefs/waves:/opt/bittrexBot/config --restart always jufkes/bittrexbot:latest
+
 -- The waves directory, in this case, contains the botConfig.json
 
 ## Donations
