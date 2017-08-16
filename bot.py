@@ -15,18 +15,18 @@ apiKey = str(config['apiKey'])
 apiSecret = str(config['apiSecret'])
 trade = config['trade']
 currency = config['currency']
-sellValuePercent = config['sellValuePercent']
+sellValuePercent = config.get('sellValuePercent', 0)
+sellVolumePercent = config.get('sellVolumePercent', 0)
 buyValuePercent = config['buyValuePercent']
 buyVolumePercent = config['buyVolumePercent']
-sellVolumePercent = config['sellVolumePercent']
 extCoinBalance = config['extCoinBalance']
 checkInterval = config['checkInterval']
 
 
-if (config['sellValuePercent' and config['sellVolumePercent']]:
-    blockSell = 'false'
-else:
+if (sellValuePercent == 0) or (sellVolumePercent == 0):
     blockSell = 'true'
+else:
+    blockSell = 'false'
 
 api = bittrex.bittrex(apiKey, apiSecret)
 market = '{0}-{1}'.format(trade, currency)
@@ -68,7 +68,7 @@ orderInventory = orderUtil.orders(market, apiKey, apiSecret) #prepare to reset o
 orderUtil.resetOrders(orderInventory, apiKey, apiSecret)
 orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
 set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, currentValue)
-if blockSell = 'false':
+if blockSell == 'false':
     set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue)
 time.sleep(2)
 
@@ -76,7 +76,7 @@ while True:
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
     orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
-    if blockSell = 'false':
+    if blockSell == 'false':
         sellControl = control_sell_orders(orderInventory)
         if (sellControl == 0):
             newSellValue = sellUtil.defSellValue(orderValueHistory, sellValuePercent)
@@ -86,7 +86,7 @@ while True:
             print "Sell volume: " + str(newSellVolume)
             result = api.selllimit(market, newSellVolume, newSellValue)
             print result
-            
+
     buyControl = control_buy_orders(orderInventory)
     orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
     orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
