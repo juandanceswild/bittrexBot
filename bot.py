@@ -68,7 +68,9 @@ def set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, c
 
 
 #setting buy / sells during startup to avoid crap selling
+print "checking value"
 currentValue = orderUtil.initialMarketValue(market, apiKey, apiSecret)
+print currentValue
 orderInventory = orderUtil.orders(market, apiKey, apiSecret) #prepare to reset orders
 orderUtil.resetOrders(orderInventory, apiKey, apiSecret)
 orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
@@ -81,7 +83,9 @@ time.sleep(2)
 while True:
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
     orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
-    orderInventory = orderUtil.orders(market, apiKey, apiSecret)
+    orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
+    orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
+
     if blockSell == 'false':
         sellControl = control_sell_orders(orderInventory)
         if (sellControl == 0):
@@ -93,8 +97,6 @@ while True:
             result = api.selllimit(market, newSellVolume, newSellValue)
             print result
 
-    orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
-    orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
 
 
     if blockBuy == 'false':
