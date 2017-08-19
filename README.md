@@ -52,7 +52,12 @@ The bot is designed to trade a single token at a time. It's recommended to run i
 The docker image can be found at __jufkes/bittrexBot__
 
 To run:
-docker run -d --name <name> -v /path/to/config/file:/opt/bittrexBot/config jufkes/bittrexbot:latest
+docker run -d --name <name> -v /path/to/directory_containing_config_file:/opt/bittrexBot/config jufkes/bittrexbot:latest
+
+Example:
+docker run -d --name waves -v /opt/botdefs/waves:/opt/bittrexBot/config --restart always jufkes/bittrexbot:latest
+
+-- The waves directory, in this case, contains the botConfig.json
 
 ## Donations
 
