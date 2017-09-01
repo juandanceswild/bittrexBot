@@ -59,6 +59,11 @@ docker run -d --name waves -v /opt/botdefs/waves:/opt/bittrexBot/config --restar
 
 -- The waves directory, in this case, contains the botConfig.json
 
+## Utilities
+Bots run without your intervention. It is recommended that you have a means to track your trades ergo, track the trades the bot is making for you. That is the same for this bot as well as any other bots you may try.
+
+I track my trades using [CryptoNotify](http://cryptonotify.com). This tool can be setup to email executed trades or, as I prefer, send a message to a Slack channel.
+
 ## Donations
 
 If this bot helped you out and you want to show your appreciation, feel free to donate some btc to '1D3adR2c3M4Ne9YmmNxKrfcG3SPebcZWJd'
