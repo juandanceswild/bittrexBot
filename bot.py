@@ -3,6 +3,7 @@ __author__ = 'chase.ufkes'
 
 import time
 import json
+import gc
 from modules import bittrex
 from modules import orderUtil
 from modules import buyUtil
@@ -80,7 +81,10 @@ if blockSell == 'false':
     set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue)
 time.sleep(2)
 
+cycle = 0
+
 while True:
+    cycle = cycle + 1
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
     orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
     orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
@@ -94,6 +98,7 @@ while True:
             print "Currency: " + currency
             print "Sell Value: " + str(newSellValue)
             print "Sell volume: " + str(newSellVolume)
+            print "Setting sell order..."
             result = api.selllimit(market, newSellVolume, newSellValue)
             print result
 
@@ -107,6 +112,12 @@ while True:
             print "Currency: " + currency
             print "Buy Value: " + str(newBuyValue)
             print "Buy Volume: " + str(newBuyVolume)
+            print "Setting buy order..."
             result = api.buylimit(market, newBuyVolume, newBuyValue)
             print result
+
+    if cycle == 10:
+        print "Garbage collection"
+        gc.collect()
+        count = 0
     time.sleep(checkInterval)
