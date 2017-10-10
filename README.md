@@ -49,6 +49,8 @@ __the config file MUST be named botConfig.json__
 
 ## Usage
 The bot is designed to trade a single token at a time. It's recommended to run it in the docker container. 
+Docker will need to be installed prior to trying to run this. To install Docker, see their installation guide:
+https://docs.docker.com/engine/installation/ 
 The docker image can be found at __jufkes/bittrexBot__
 
 To run:
