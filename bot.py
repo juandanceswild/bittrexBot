@@ -74,7 +74,7 @@ currentValue = orderUtil.initialMarketValue(market, apiKey, apiSecret)
 print currentValue
 orderInventory = orderUtil.orders(market, apiKey, apiSecret) #prepare to reset orders
 orderUtil.resetOrders(orderInventory, apiKey, apiSecret)
-orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
+orderVolume = api.getbalance(currency)['Balance'] + extCoinBalance
 if blockBuy == 'false':
     set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, currentValue)
 if blockSell == 'false':
@@ -88,7 +88,7 @@ while True:
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
     orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
     orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
-    orderVolume = api.getbalance(currency)['Available'] + extCoinBalance
+    orderVolume = api.getbalance(currency)['Balance'] + extCoinBalance
 
     if blockSell == 'false':
         sellControl = control_sell_orders(orderInventory)
