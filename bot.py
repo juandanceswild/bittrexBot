@@ -84,7 +84,7 @@ time.sleep(2)
 cycle = 0
 
 while True:
-    cycle = cycle + 1
+    #cycle = cycle + 1
     orderInventory = orderUtil.orders(market, apiKey, apiSecret)
     orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
     orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
@@ -116,8 +116,8 @@ while True:
             result = api.buylimit(market, newBuyVolume, newBuyValue)
             print result
 
-    if cycle == 10:
-        print "Garbage collection"
-        gc.collect()
-        count = 0
+    #if cycle == 10:
+    #    print "Garbage collection"
+    #    gc.collect()
+    #    count = 0
     time.sleep(checkInterval)
