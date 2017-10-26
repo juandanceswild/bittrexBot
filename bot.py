@@ -67,9 +67,11 @@ def set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, curr
     print result
 
 def set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue):
-    if (initialSellPrice):
+    if (initialSellPrice > currentValue):
+        print "Setting user defined sell value"
         newSellValue = initialSellPrice
     else:
+        print "Setting sellValue to market conditions"
         newSellValue = sellUtil.defSellValue(currentValue, sellValuePercent)
     newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
     result = api.selllimit(market, newSellVolume, newSellValue)
