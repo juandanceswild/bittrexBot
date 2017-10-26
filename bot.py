@@ -22,7 +22,12 @@ buyValuePercent = config.get('buyValuePercent', 0)
 buyVolumePercent = config.get('buyVolumePercent', 0)
 extCoinBalance = config['extCoinBalance']
 checkInterval = config['checkInterval']
+initialSellPrice = config.get('initialSellPrice', 0)
 
+if (config['initialSellPrice'] != 0):
+    initialSellPrice = config['initialSellPrice']
+    float(initialSellPrice)
+    print initialSellPrice
 
 if (sellValuePercent == 0) or (sellVolumePercent == 0):
     blockSell = 'true'
@@ -62,7 +67,10 @@ def set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, curr
     print result
 
 def set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue):
-    newSellValue = sellUtil.defSellValue(currentValue, sellValuePercent)
+    if (initialSellPrice):
+        newSellValue = initialSellPrice
+    else:
+        newSellValue = sellUtil.defSellValue(currentValue, sellValuePercent)
     newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
     result = api.selllimit(market, newSellVolume, newSellValue)
     print result
