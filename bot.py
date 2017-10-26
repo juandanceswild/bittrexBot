@@ -84,40 +84,44 @@ time.sleep(2)
 cycle = 0
 
 while True:
-    #cycle = cycle + 1
-    orderInventory = orderUtil.orders(market, apiKey, apiSecret)
-    orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
-    orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
-    orderVolume = api.getbalance(currency)['Balance'] + extCoinBalance
+    cycle = cycle + 1
+    try:
+        orderInventory = orderUtil.orders(market, apiKey, apiSecret)
+        orderUtil.recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval)
+        orderValueHistory = orderUtil.lastOrderValue(market, apiKey, apiSecret)
+        orderVolume = api.getbalance(currency)['Balance'] + extCoinBalance
 
-    if blockSell == 'false':
-        sellControl = control_sell_orders(orderInventory)
-        if (sellControl == 0):
-            newSellValue = sellUtil.defSellValue(orderValueHistory, sellValuePercent)
-            newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
-            print "Currency: " + currency
-            print "Sell Value: " + str(newSellValue)
-            print "Sell volume: " + str(newSellVolume)
-            print "Setting sell order..."
-            result = api.selllimit(market, newSellVolume, newSellValue)
-            print result
+        if blockSell == 'false':
+            sellControl = control_sell_orders(orderInventory)
+            if (sellControl == 0):
+                newSellValue = sellUtil.defSellValue(orderValueHistory, sellValuePercent)
+                newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
+                print "Currency: " + currency
+                print "Sell Value: " + str(newSellValue)
+                print "Sell volume: " + str(newSellVolume)
+                print "Setting sell order..."
+                result = api.selllimit(market, newSellVolume, newSellValue)
+                print result
 
 
 
-    if blockBuy == 'false':
-        buyControl = control_buy_orders(orderInventory)
-        if (buyControl == 0):
-            newBuyValue = buyUtil.defBuyValue(orderValueHistory, buyValuePercent)
-            newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
-            print "Currency: " + currency
-            print "Buy Value: " + str(newBuyValue)
-            print "Buy Volume: " + str(newBuyVolume)
-            print "Setting buy order..."
-            result = api.buylimit(market, newBuyVolume, newBuyValue)
-            print result
+        if blockBuy == 'false':
+            buyControl = control_buy_orders(orderInventory)
+            if (buyControl == 0):
+                newBuyValue = buyUtil.defBuyValue(orderValueHistory, buyValuePercent)
+                newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
+                print "Currency: " + currency
+                print "Buy Value: " + str(newBuyValue)
+                print "Buy Volume: " + str(newBuyVolume)
+                print "Setting buy order..."
+                result = api.buylimit(market, newBuyVolume, newBuyValue)
+                print result
 
-    #if cycle == 10:
-    #    print "Garbage collection"
-    #    gc.collect()
-    #    count = 0
+    except:
+        print "Bittrex probably threw a 503...trying again on the next cycle"
+
+    if cycle == 10:
+        print "Garbage collection"
+        gc.collect()
+        count = 0
     time.sleep(checkInterval)
