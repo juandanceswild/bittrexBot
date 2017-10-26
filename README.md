@@ -21,9 +21,11 @@ This is an experimental bot for swing trading against the bittrex exchange. Set 
 * buyVolumePercent - how many tokens to purchase. Set this number higher than the sellVolumePercent to accumulate more tokens...set it lower to purge tokens
 * extCoinBalance - off exchange token count
 * checkInterval - how often the bot will check for orders
+* initialSellPrice - **OPTIONAL** price the bot sets on first startup (example: 0.00095). Leave at 0 to set to current market conditions
 
 *Specal Options*
 
+* Adding a sat value to the initialSellVolume configuration sets the first sell price at startup
 * Leaving sell value and / or percent out of the config will disable placement of sell orders. Buys will still place and when they trigger, the bracket will still shift.
 * Leaving buy value and / or percent out of the config will disable placement of buy orders. Sells will still place and when they trigger, the bracket will still shift.
 
@@ -42,7 +44,8 @@ The percentage values are actual percentages...not decimals. So if you want to t
   "sellVolumePercent": 3,
   "buyVolumePercent": 3,
   "extCoinBalance": 0,
-  "checkInterval": 30
+  "checkInterval": 30,
+  "initialSellValue": 0
 }
 ```
 __the config file MUST be named botConfig.json__
