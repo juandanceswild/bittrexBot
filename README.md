@@ -3,6 +3,10 @@ Questions feel free to ask
 # bittrexBot
 This is an experimental bot for swing trading against the bittrex exchange. Set an upper and lower percentage that will place buy / sell orders. When an order triggers, the bracket will shift basing off the last order.
 
+**This bot is designed to trade coins you currently have! At current, it does not support trying to trade on a currency of which you have a 0 balance.**
+
+**Example: if you try to execute it on ZEC but have no ZEC coins, it will not work**
+
 # DISCLAIMER
 
 ### I am not responsible for anything done with this bot. You use it at your own risk. There are no warranties or guarantees expressed or implied. You assume all responsibility and liability.
