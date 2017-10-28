@@ -67,8 +67,6 @@ def set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, c
     result = api.selllimit(market, newSellVolume, newSellValue)
     print result
 
-
-#setting buy / sells during startup to avoid crap selling
 print "checking value"
 currentValue = orderUtil.initialMarketValue(market, apiKey, apiSecret)
 print currentValue
