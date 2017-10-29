@@ -11,13 +11,13 @@ This is an experimental bot extending the original bittrexBot to work on tradesa
 
 ## Configuration
 
-......working progresss
+......work in progress
 #### Example file 
 
-......working progresss
+......work in progress
 
 ## Usage
-......working progresss
+......work in progress
 
 ## Utilities
 Bots run without your intervention. It is recommended that you have a means to track your trades ergo, track the trades the bot is making for you. That is the same for this bot as well as any other bots you may try.
