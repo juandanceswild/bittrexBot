@@ -3,7 +3,7 @@
 This is an experimental bot extending the original bittrexBot to work on tradesatoshi exchange with some diffrence:
 1. The bot is restarted by a crontab entry and it doesn't require docker
 2. The bot requires just an amount of BTC(trade) to start
-3. The configurattion parameters realted to sell and buy can be modified at runtime
+3. The configurattion parameters related to sell and buy can be modified at runtime
 
 # DISCLAIMER
 
