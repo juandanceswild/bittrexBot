@@ -16,25 +16,26 @@ apiKey = str(config['apiKey'])
 apiSecret = str(config['apiSecret'])
 trade = config['trade']
 currency = config['currency']
-sellValuePercent = config.get('sellValuePercent', 0)
+sellValuePercent = config.get('sellValuePercent', 4)
 sellVolumePercent = config.get('sellVolumePercent', 0)
-buyValuePercent = config.get('buyValuePercent', 0)
+buyValuePercent = config.get('buyValuePercent', 4)
 buyVolumePercent = config.get('buyVolumePercent', 0)
-extCoinBalance = config['extCoinBalance']
-checkInterval = config['checkInterval']
+extCoinBalance = config.get('extCoinBalance', 0)
+checkInterval = config.get('checkInterval', 30)
 initialSellPrice = config.get('initialSellPrice', 0)
+tradeAmount = config.get('tradeAmount', 0)
 
-if (config['initialSellPrice'] != 0):
+if (initialSellPrice != 0):
     initialSellPrice = config['initialSellPrice']
     float(initialSellPrice)
     print initialSellPrice
 
-if (sellValuePercent == 0) or (sellVolumePercent == 0):
+if (sellValuePercent == 0):
     blockSell = 'true'
 else:
     blockSell = 'false'
 
-if (buyValuePercent == 0) or (buyVolumePercent == 0):
+if (buyValuePercent == 0):
     blockBuy = 'true'
 else:
     blockBuy = 'false'
@@ -62,7 +63,10 @@ def control_buy_orders(orderInventory):
 
 def set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, currentValue):
     newBuyValue = buyUtil.defBuyValue(currentValue, buyValuePercent)
-    newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
+    if (buyVolumePercent == 0):
+        newBuyVolume = tradeAmount
+    else:
+        newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
     result = api.buylimit(market, newBuyVolume, newBuyValue)
     print result
 
@@ -73,19 +77,24 @@ def set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, c
     else:
         print "Setting sellValue to market conditions"
         newSellValue = sellUtil.defSellValue(currentValue, sellValuePercent)
-    newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
+    if (sellVolumePercent == 0):
+        newSellVolume = tradeAmount
+    else:
+        newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
     result = api.selllimit(market, newSellVolume, newSellValue)
     print result
 
 print "checking value"
 currentValue = orderUtil.initialMarketValue(market, apiKey, apiSecret)
-print currentValue
 orderInventory = orderUtil.orders(market, apiKey, apiSecret) #prepare to reset orders
 orderUtil.resetOrders(orderInventory, apiKey, apiSecret)
 orderVolume = api.getbalance(currency)['Balance'] + extCoinBalance
+
 if blockBuy == 'false':
+    print tradeAmount
     set_initial_buy(buyVolumePercent, orderVolume, market, buyValuePercent, currentValue)
 if blockSell == 'false':
+    print tradeAmount
     set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue)
 time.sleep(2)
 
@@ -103,7 +112,12 @@ while True:
             sellControl = control_sell_orders(orderInventory)
             if (sellControl == 0):
                 newSellValue = sellUtil.defSellValue(orderValueHistory, sellValuePercent)
-                newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
+                if (sellVolumePercent == 0):
+                    print "Setting user defined trade amount "
+                    print tradeAmount
+                    newSellVolume = tradeAmount
+                else:
+                    newSellVolume = sellUtil.defSellVolume(orderVolume, sellVolumePercent)
                 print "Currency: " + currency
                 print "Sell Value: " + str(newSellValue)
                 print "Sell volume: " + str(newSellVolume)
@@ -117,7 +131,12 @@ while True:
             buyControl = control_buy_orders(orderInventory)
             if (buyControl == 0):
                 newBuyValue = buyUtil.defBuyValue(orderValueHistory, buyValuePercent)
-                newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
+                if (buyVolumePercent == 0):
+                    print "Setting user defined trade amount "
+                    print tradeAmount
+                    newBuyVolume = tradeAmount
+                else:
+                    newBuyVolume = buyUtil.defBuyVolume(orderVolume, buyVolumePercent)
                 print "Currency: " + currency
                 print "Buy Value: " + str(newBuyValue)
                 print "Buy Volume: " + str(newBuyVolume)
@@ -128,7 +147,7 @@ while True:
     except:
         print "Bittrex probably threw a 503...trying again on the next cycle"
 
-    if cycle == 10:
+    if cycle == 100:
         print "Garbage collection"
         gc.collect()
         count = 0
