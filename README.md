@@ -15,21 +15,24 @@ This is an experimental bot for swing trading against the bittrex exchange. Set 
 
 #### Note: An api key will need to be created with "Trade Limit" permissions
 
-* apiKey - api key
-* apiSecret - api key secret
-* trade - the base token used for exchange
-* currency - the token ticker to be traded
-* sellValuePercent - the difference in the sell price of the previous order completed
-* buyValuePercent - the difference in the buy price of the previous order completed
-* sellVolumePercent - how many tokens are traded during a transaction
-* buyVolumePercent - how many tokens to purchase. Set this number higher than the sellVolumePercent to accumulate more tokens...set it lower to purge tokens
-* extCoinBalance - off exchange token count
-* checkInterval - how often the bot will check for orders
-* initialSellPrice - **OPTIONAL** price the bot sets on first startup (example: 0.00095). Leave at 0 to set to current market conditions
+| Config Parameter  |  Type |  Default | Required  |  Description |
+|---|---|---|---|---|
+| apiKey  |  String |  none | Yes  |  API key for account access |
+| apiSecret  | String  |  none |  Yes |  Secret key for account access |
+| trade  | String  |  none | Yes | Base token used for exchange (example: BTC)  |
+| currency | String  | none  |  Yes | Token to be traded (example: STRAT) |
+| sellValuePercent  | Integer/Float  | 4  |  No | Difference in sell price of the previous successful order or market (on startup)  | 
+| buyValuePercent  |  Integer/FLoat |  4 |  No | Difference in buy price of the previous successful order or market (on startup)   | 
+| sellVolumePercent  | Integer/Float  | 0  | No  |  Percent of your tokens to be placed in sell orders | 
+| buyVolumePercent  |  Integer/Float |  0 |  No | Percent of your tokens to be placed in buy orders  | 
+| extCoinBalance | Integer/Float | 0| No | Off exchange balance|
+| checkInterval | Integer | 30| No | How often the bot checks state|
+| tradeAmount | Integer/Float | 0| No | Manually set token amounts for buy / sell **Overrides percent parameters**|
+| initialSellPrice | Integer | 0 | No | Price set on first startup (example: 0.00095)|
+
 
 *Specal Options*
 
-* Adding a sat value to the initialSellVolume configuration sets the first sell price at startup
 * Leaving sell value and / or percent out of the config will disable placement of sell orders. Buys will still place and when they trigger, the bracket will still shift.
 * Leaving buy value and / or percent out of the config will disable placement of buy orders. Sells will still place and when they trigger, the bracket will still shift.
 
