@@ -15,6 +15,7 @@ def lastOrderValue(market, apiKey, apiSecret):
         currentValue = currentValue[0]['Last']
         return currentValue
 
+# Checks the last closed order, and if the last order closed before an interval, resets (cancels) all remaining orders.
 def recentTransaction(market, orderInventory, apiKey, apiSecret, checkInterval):
     api = bittrex.bittrex(apiKey, apiSecret)
     lastOrder = api.getorderhistory(market, 0)
