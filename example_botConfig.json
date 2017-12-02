@@ -13,3 +13,9 @@
   "enterPrice": "0.00247090",
   "exitPrice": "0.00277090"
 }
+
+// Terminal Command
+// docker run -ti --name omg -v /Users/juancortes/htdocs/bittrexBot/NXT:/opt/bittrexBot/config --restart always jufkes/bittrexbot:latest
+// docker stop nxt
+// docker rm nxt
+// docker ps

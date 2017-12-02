@@ -29,7 +29,7 @@ tradeAmount = config.get('tradeAmount', 0)
 # stopLossPercent = config.get('stopLossPercent', 4)
 
 #new method -- enter/exit
-enterExit = config.get('enterExit', false)
+enterExit = config.get('enterExit', 'false')
 enterPrice = config.get('enterPrice', 0)
 exitPrice = config.get('exitPrice', 0)
 
@@ -150,7 +150,7 @@ while looping:
                     print "Sell Value: " + str(sellValue)
                     print "Sell Volume: " + str(sellVolume)
                     print "Setting sell entry order..."
-                    result = api.selllimit(market, sellVolume, sellValue)
+                    result = api.selllimit(market, sellVolume, sellValue) # Set sell order.
                     print result
 
             if enterExitCycle == 'sell':
