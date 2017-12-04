@@ -1,0 +1,17 @@
+{
+  "apiKey": "a8ec904c2ce6462ca36551058abdb18c",
+  "apiSecret": "e3a519559bfa4f7692b6af4f741886cc",
+  "trade": "BTC",
+  "currency": "NXT",
+  "sellValuePercent": 3.5,
+  "buyValuePercent": 4,
+  "sellVolumePercent": 0,
+  "buyVolumePercent": 0,
+  "extCoinBalance": 0,
+  "checkInterval": 15,
+  "initialSellValue": 0.00061550,
+  "tradeAmount": 100,
+  "enterExit": "true",
+  "enterPrice": 0.00000025,
+  "exitPrice": 0.00002900
+}
