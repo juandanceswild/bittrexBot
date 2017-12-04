@@ -98,8 +98,13 @@ print "checking value"
 currentValue = orderUtil.initialMarketValue(market, apiKey, apiSecret)
 orderInventory = orderUtil.orders(market, apiKey, apiSecret) #prepare to reset orders
 orderUtil.resetOrders(orderInventory, apiKey, apiSecret)
-print "balance is " + api.getbalance(currency)['Balance']
-orderVolume = api.getbalance(currency)['Balance'] + extCoinBalance
+if api.getbalance(currency)['Balance'] is None:
+    balance = 0
+else:
+    balance = api.getbalance(currency)['Balance']
+
+print "balance is " + str(balance)
+orderVolume = balance + extCoinBalance
 
 if blockBuy == 'false':
     print tradeAmount

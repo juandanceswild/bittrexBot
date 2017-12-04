@@ -15,8 +15,10 @@
 }
 
 // Terminal Command
-// docker run -ti --name omg -v /Users/juancortes/htdocs/bittrexBot/NXT:/opt/bittrexBot/config --restart always jufkes/bittrexbot:latest
+// docker run -ti --name omg -v /Users/juancortes/htdocs/bittrexBot/config/nxt:/opt/bittrexBot/config --restart always jufkes/bittrexbot:latest
 // docker stop nxt
 // docker rm nxt
 // docker ps
+// docker images -a
 // docker build -t mybot .
+// docker rmi $(docker images -f dangling=true -q)
