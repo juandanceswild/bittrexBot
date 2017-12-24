@@ -22,3 +22,6 @@
 // docker images -a
 // docker build -t mybot .
 // docker rmi $(docker images -f dangling=true -q)
+// docker rmi $(docker images -qa -f 'dangling=true')
+// docker push juandanceswild/mybot:latest
+// docker run -ti --name omg -v /Users/juancortes/htdocs/bittrexBot/config/nxt:/opt/bittrexBot/config --restart always juandanceswild/mybot:latest

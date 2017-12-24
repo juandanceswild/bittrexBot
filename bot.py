@@ -112,7 +112,7 @@ if blockBuy == 'false':
 if blockSell == 'false':
     print tradeAmount
     set_initial_sell(sellVolumePercent, orderVolume, market, sellValuePercent, currentValue)
-time.sleep(2)
+
 
 looping = True
 cycle = 0
@@ -136,6 +136,7 @@ if enterExit == 'true':
     result = api.buylimit(market, buyVolume, buyValue)
     print result
 
+time.sleep(checkInterval)
 
 while looping:
     cycle = cycle + 1
@@ -148,6 +149,8 @@ while looping:
         if enterExit == 'true':
             if enterExitCycle == 'buy':
                 buyControl = control_buy_orders(orderInventory)
+                print "Orders open: " + str(buyControl)
+                print "Buying " + str(buyVolume) + " " + currency + " at " + str(buyValue)
                 if (buyControl == 0): # buy order was filled.
                     enterExitCycle = 'sell'
                     sellVolume = tradeAmount
@@ -189,9 +192,6 @@ while looping:
                 # stopLossValue = orderInventory[0]['PricePerUnit'] * (1 - sellVolumePercent - stopLossPercent) 
                 # if (orderValueHistory <= stopLossValue)
                     # orderUtil.
-
-
-
 
         if blockBuy == 'false': # and stopLossLimit = 'false':
             buyControl = control_buy_orders(orderInventory)
